@@ -8,11 +8,11 @@ let firebaseConfig;
 self.addEventListener('install', event => {
   // extract firebase config from query string
   const serializedFirebaseConfig = new URL(location).searchParams.get('firebaseConfig');
-  
+
   if (!serializedFirebaseConfig) {
     throw new Error('Firebase Config object not found in service worker query string.');
   }
-  
+
   firebaseConfig = JSON.parse(serializedFirebaseConfig);
   console.log("Service worker installed with Firebase config", firebaseConfig);
 });
@@ -23,12 +23,24 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(fetchWithFirebaseHeaders(event.request));
 });
 
-// TODO: add Firebase Authentication headers to request
-async function fetchWithFirebaseHeaders(request) {
-  return await fetch(request);
+export function onAuthStateChanged(cb) {
+  return _onAuthStateChanged(auth, cb);
 }
 
-// TODO: get user token
-async function getAuthIdToken(auth) {
-  throw new Error('not implemented');
+export async function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    console.error("Error signing in with Google", error);
+  }
+}
+
+export async function signOut() {
+  try {
+    return auth.signOut();
+  } catch (error) {
+    console.error("Error signing out with Google", error);
+  }
 }
