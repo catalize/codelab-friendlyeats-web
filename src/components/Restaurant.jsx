@@ -54,6 +54,8 @@ export default function Restaurant({
       setRestaurantDetails(data);
     });
 
+    console.log(unsubscribeFromRestaurant);
+
     return () => {
       unsubscribeFromRestaurant();
     };
